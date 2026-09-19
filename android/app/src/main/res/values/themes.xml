@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Mercan" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/brand</item>
+        <item name="colorPrimaryDark">@color/brand_dark</item>
+        <item name="colorPrimaryVariant">@color/brand_dark</item>
+        <item name="colorSecondary">@color/brand</item>
+        <item name="colorAccent">@color/brand</item>
+        <item name="colorOnPrimary">@color/on_brand</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/ink</item>
+        <item name="android:colorBackground">@color/paper</item>
+        <item name="android:windowBackground">@color/paper</item>
+        <item name="android:textColorPrimary">@color/ink</item>
+        <item name="android:textColorSecondary">@color/ink_soft</item>
+        <item name="android:textColorHint">@color/ink_faint</item>
+        <item name="colorControlActivated">@color/brand</item>
+        <item name="colorControlHighlight">@color/ripple</item>
+        <!-- Bookman Old Style everywhere -->
+        <item name="android:fontFamily">@font/bookman</item>
+        <item name="fontFamily">@font/bookman</item>
+        <item name="android:textViewStyle">@style/Widget.Mercan.TextView</item>
+        <item name="android:editTextStyle">@style/Widget.Mercan.EditText</item>
+        <item name="editTextStyle">@style/Widget.Mercan.EditText</item>
+        <item name="materialButtonStyle">@style/Widget.Mercan.Button</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.Mercan.Dialog</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.Mercan.Dialog</item>
+        <item name="switchStyle">@style/Widget.Mercan.Switch</item>
+        <item name="popupMenuStyle">@style/Widget.Mercan.PopupMenu</item>
+        <item name="android:popupMenuStyle">@style/Widget.Mercan.PopupMenu</item>
+        <!-- Edge-to-edge: the activity pads the toolbar / input bar itself. -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <style name="Widget.Mercan.TextView" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/bookman</item>
+        <item name="android:textColor">@color/ink</item>
+    </style>
+
+    <style name="Widget.Mercan.EditText" parent="Widget.AppCompat.EditText">
+        <item name="android:fontFamily">@font/bookman</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textColorHint">@color/ink_faint</item>
+    </style>
+
+    <style name="Widget.Mercan.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:fontFamily">@font/bookman</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="backgroundTint">@color/brand</item>
+        <item name="android:textColor">@color/on_brand</item>
+    </style>
+
+    <style name="Widget.Mercan.Switch" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:fontFamily">@font/bookman</item>
+    </style>
+
+    <style name="Widget.Mercan.PopupMenu" parent="Widget.MaterialComponents.PopupMenu">
+        <item name="android:popupBackground">@drawable/bg_popup</item>
+    </style>
+
+    <style name="ThemeOverlay.Mercan.Dialog" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="android:fontFamily">@font/bookman</item>
+        <item name="fontFamily">@font/bookman</item>
+        <item name="colorPrimary">@color/brand</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="android:textColorPrimary">@color/ink</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.Mercan.DialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.Mercan.DialogButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.Mercan.DialogButton</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/Widget.Mercan.DialogTitle</item>
+        <item name="android:windowTitleStyle">@style/Widget.Mercan.DialogWindowTitle</item>
+    </style>
+
+    <style name="Widget.Mercan.DialogButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:fontFamily">@font/bookman</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/brand</item>
+    </style>
+
+    <style name="Widget.Mercan.DialogTitle" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:fontFamily">@font/bookman</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/ink</item>
+    </style>
+
+    <style name="Widget.Mercan.DialogWindowTitle" parent="RtlOverlay.DialogWindowTitle.AppCompat">
+        <item name="android:fontFamily">@font/bookman</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textSize">19sp</item>
+    </style>
+
+    <!-- Brand word-mark: Bookman, ink -->
+    <style name="Text.Mercan.Wordmark" parent="Widget.Mercan.TextView">
+        <item name="android:fontFamily">@font/bookman</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Text.Mercan.SectionHeader" parent="Widget.Mercan.TextView">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/brand</item>
+        <item name="android:letterSpacing">0.08</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingTop">22dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingStart">4dp</item>
+    </style>
+
+    <style name="Text.Mercan.Label" parent="Widget.Mercan.TextView">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/ink_soft</item>
+        <item name="android:paddingBottom">6dp</item>
+    </style>
+
+    <style name="Widget.Mercan.Field" parent="Widget.Mercan.EditText">
+        <item name="android:background">@drawable/bg_field</item>
+        <item name="android:paddingHorizontal">14dp</item>
+        <item name="android:paddingVertical">11dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="SuggestionCard" parent="Widget.Mercan.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:background">@drawable/bg_card</item>
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:paddingVertical">13dp</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:drawableEnd">@drawable/ic_arrow</item>
+        <item name="android:drawableTint">@color/ink_faint</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="DrawerAction" parent="Widget.Mercan.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_conversation_item</item>
+        <item name="android:layout_marginHorizontal">8dp</item>
+        <item name="android:paddingHorizontal">14dp</item>
+        <item name="android:paddingVertical">12dp</item>
+        <item name="android:drawablePadding">14dp</item>
+        <item name="android:drawableTint">@color/ink_soft</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="Widget.Mercan.IconButton" parent="">
+        <item name="android:layout_width">44dp</item>
+        <item name="android:layout_height">44dp</item>
+        <item name="android:background">@drawable/bg_icon_button</item>
+        <item name="android:tint">@color/ink</item>
+        <item name="android:scaleType">center</item>
+    </style>
+
+    <style name="Widget.Mercan.PrimaryButton" parent="Widget.Mercan.TextView">
+        <item name="android:background">@drawable/bg_button_primary</item>
+        <item name="android:textColor">@color/on_brand</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingHorizontal">28dp</item>
+        <item name="android:paddingVertical">14dp</item>
+    </style>
+
+    <style name="Widget.Mercan.SecondaryButton" parent="Widget.Mercan.TextView">
+        <item name="android:background">@drawable/bg_button_secondary</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingHorizontal">20dp</item>
+        <item name="android:paddingVertical">12dp</item>
+    </style>
+</resources>

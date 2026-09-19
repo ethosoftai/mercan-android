@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand palette: red #AF372E, ink #333333, paper #F0F0F0 -->
+    <color name="brand">#AF372E</color>
+    <color name="brand_dark">#8E2C25</color>
+    <color name="brand_soft">#EED3CE</color>
+    <color name="ink">#333333</color>
+    <color name="ink_soft">#6B6B6B</color>
+    <color name="ink_faint">#9A9A9A</color>
+    <color name="paper">#F6E6E3</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_alt">#FBF3F1</color>
+    <color name="line">#E4CFCA</color>
+    <color name="line_soft">#EFDEDA</color>
+    <color name="user_bubble">#333333</color>
+    <color name="user_text">#F0F0F0</color>
+    <color name="code_bg">#F1E3DF</color>
+    <color name="ripple">#1F000000</color>
+    <color name="scrim">#66000000</color>
+    <color name="danger">#B3261E</color>
+    <color name="on_brand">#FFFFFF</color>
+</resources>
