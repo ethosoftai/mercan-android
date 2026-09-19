@@ -1,0 +1,26 @@
+# build outputs
+build/
+build-*/
+out/
+*.o
+*.obj
+# Android
+android/build/
+android/.gradle/
+android/app/build/
+android/app/.cxx/
+android/local.properties
+android/keystore.properties
+*.jks
+*.keystore
+# secrets / model (model.mercan is licensed, never commit)
+*.mercan
+*.mercan.enc
+model.key
+# tooling
+__pycache__/
+*.pyc
+node_modules/
+.venv/
+.DS_Store
+Thumbs.db
