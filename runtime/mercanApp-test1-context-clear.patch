@@ -1,0 +1,31 @@
+diff --git a/runtime/libmercan/include/mercan.h b/runtime/libmercan/include/mercan.h
+index 7669026..e595343 100644
+--- a/runtime/libmercan/include/mercan.h
++++ b/runtime/libmercan/include/mercan.h
+@@ -56,6 +56,9 @@ MERCAN_API const char * mercan_model_tokenizer(const mercan_model * model);
+ MERCAN_API mercan_context * mercan_context_create(mercan_model * model, mercan_context_params params);
+ MERCAN_API void mercan_context_free(mercan_context * ctx);
+ 
++// Clears the KV cache and resets position tracking so the context can be reused.
++MERCAN_API void mercan_context_clear(mercan_context * ctx);
++
+ // Returns token count on success. If capacity is too small, returns -required_count.
+ MERCAN_API int32_t mercan_tokenize(
+     mercan_model * model,
+diff --git a/runtime/libmercan/src/mercan.cpp b/runtime/libmercan/src/mercan.cpp
+index 3fe4a44..a65c036 100644
+--- a/runtime/libmercan/src/mercan.cpp
++++ b/runtime/libmercan/src/mercan.cpp
+@@ -273,6 +273,12 @@ void mercan_context_free(mercan_context * ctx) {
+     delete ctx;
+ }
+ 
++void mercan_context_clear(mercan_context * ctx) {
++    if (!ctx || !ctx->impl) return;
++    llama_memory_t mem = llama_get_memory(ctx->impl);
++    if (mem) llama_memory_clear(mem, true);
++}
++
+ int32_t mercan_tokenize(
+     mercan_model * model,
+     const char * text,

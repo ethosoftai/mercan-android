@@ -1,0 +1,22 @@
+diff --git a/ggml/src/ggml-cpu/ggml-cpu.c b/ggml/src/ggml-cpu/ggml-cpu.c
+index 87a329f26..7ff0c1c1b 100644
+--- a/ggml/src/ggml-cpu/ggml-cpu.c
++++ b/ggml/src/ggml-cpu/ggml-cpu.c
+@@ -2554,6 +2554,17 @@ static bool ggml_thread_apply_affinity(bool * mask) {
+     return m != 0;
+ }
+ 
++// Older mingw-w64 SDKs ship the ThreadPowerThrottling enum value but not the state struct.
++#if !defined(THREAD_POWER_THROTTLING_CURRENT_VERSION)
++typedef struct _THREAD_POWER_THROTTLING_STATE_COMPAT {
++    ULONG Version;
++    ULONG ControlMask;
++    ULONG StateMask;
++} THREAD_POWER_THROTTLING_STATE;
++#define THREAD_POWER_THROTTLING_CURRENT_VERSION 1
++#define THREAD_POWER_THROTTLING_EXECUTION_SPEED 0x1
++#endif
++
+ static bool ggml_thread_apply_priority(int32_t prio) {
+     // Note that on Windows the Process Priority Class must be updated in order to set Thread priority.
+     // This is up to the applications.
