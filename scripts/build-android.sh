@@ -26,7 +26,15 @@ cargo build --release --locked --manifest-path "$FFI/Cargo.toml" --target aarch6
 FFI_LIB=$FFI/target/aarch64-linux-android/release/libnedo004_ffi.a
 test -s "$FFI_LIB"
 
-# 2) (CMake tweaks are applied by sync.sh)
+# 2) Speech-to-text: whisper.cpp source + the bundled model asset (base, 5-bit ≈ 60 MB)
+if [ ! -f /root/work/whisper.cpp/CMakeLists.txt ]; then
+  git clone -q --depth 1 https://github.com/ggml-org/whisper.cpp.git /root/work/whisper.cpp
+fi
+export MERCAN_WHISPER_DIR=/root/work/whisper.cpp
+mkdir -p "$WORK/cache" "$APPS/android/app/src/main/assets"
+STT_MODEL=$WORK/cache/ggml-base-q5_1.bin
+[ -s "$STT_MODEL" ] || curl -sfL "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base-q5_1.bin" -o "$STT_MODEL"
+cp "$STT_MODEL" "$APPS/android/app/src/main/assets/whisper.bin"
 
 # 3) Gradle
 export MERCAN_REPO_DIR=$REPO
@@ -39,4 +47,15 @@ mkdir -p "$OUT"
 cp app/build/outputs/apk/release/app-release.apk "$OUT/Mercan.apk"
 ls -la "$OUT"
 unzip -l "$OUT/Mercan.apk" | grep -E 'lib/arm64-v8a' || true
+# Copy into dist/ and verify the transfer (large writes over /mnt/c have corrupted files before).
+DIST=/mnt/c/Users/yagiz/Desktop/app/dist
+VERSION=$(grep -oP 'versionName "\K[^"]+' "$APPS/android/app/build.gradle")
+if [ -d "$DIST" ]; then
+  src=$(md5sum "$OUT/Mercan.apk" | cut -d' ' -f1)
+  rm -f "$DIST"/Mercan-*.apk
+  cp "$OUT/Mercan.apk" "$DIST/Mercan-$VERSION.apk"
+  dst=$(md5sum "$DIST/Mercan-$VERSION.apk" | cut -d' ' -f1)
+  [ "$src" = "$dst" ] || { echo "KOPYA BOZUK, tekrar deneniyor"; cp "$OUT/Mercan.apk" "$DIST/Mercan-$VERSION.apk"; }
+  ls -la "$DIST/Mercan-$VERSION.apk"
+fi
 echo "ANDROID PACKAGE: $OUT/Mercan.apk"

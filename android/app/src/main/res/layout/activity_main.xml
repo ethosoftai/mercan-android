@@ -191,6 +191,7 @@
             android:background="@color/paper">
 
             <LinearLayout
+                android:id="@+id/input_pill"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -226,6 +227,16 @@
                     android:textSize="16sp" />
 
                 <ImageButton
+                    android:id="@+id/mic"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:background="@drawable/bg_icon_button"
+                    android:src="@drawable/ic_mic"
+                    android:tint="@color/ink_soft"
+                    android:scaleType="center"
+                    android:contentDescription="@string/record_voice" />
+
+                <ImageButton
                     android:id="@+id/send"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
@@ -245,6 +256,62 @@
                     android:scaleType="center"
                     android:visibility="gone"
                     android:contentDescription="@string/stop" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/record_bar"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_record_pill"
+                android:paddingHorizontal="6dp"
+                android:elevation="2dp"
+                android:visibility="gone">
+
+                <ImageButton
+                    android:id="@+id/record_cancel"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_icon_button"
+                    android:src="@drawable/ic_close"
+                    android:tint="@color/user_text"
+                    android:scaleType="center"
+                    android:contentDescription="@string/cancel" />
+
+                <ai.mercan.app.WaveformView
+                    android:id="@+id/waveform"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="6dp" />
+
+                <TextView
+                    android:id="@+id/record_timer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:text="0:00"
+                    android:textColor="@color/user_text"
+                    android:textSize="14sp" />
+
+                <ProgressBar
+                    android:id="@+id/record_progress"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginEnd="9dp"
+                    android:indeterminateTint="@color/user_text"
+                    android:visibility="gone" />
+
+                <ImageButton
+                    android:id="@+id/record_confirm"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_record_confirm"
+                    android:src="@drawable/ic_check"
+                    android:tint="@color/user_bubble"
+                    android:scaleType="center"
+                    android:contentDescription="@string/send" />
             </LinearLayout>
 
             <TextView

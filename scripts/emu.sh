@@ -3,7 +3,8 @@
 set -uo pipefail
 export ANDROID_HOME=/opt/android-sdk ANDROID_SDK_ROOT=/opt/android-sdk ANDROID_AVD_HOME=/root/.android/avd
 ADB=/opt/android-sdk/platform-tools/adb
-OUT=/mnt/c/Users/yagiz/AppData/Local/Temp/claude/C--Users-yagiz-Desktop-app/c131897e-8deb-43e8-aff3-78b37019fa6b/scratchpad
+OUT=${MERCAN_SHOT_DIR:-/root/work/shots}
+mkdir -p "$OUT"
 case "${1:-}" in
   start)
     cd /opt/android-sdk/emulator

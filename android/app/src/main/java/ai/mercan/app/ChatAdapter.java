@@ -56,6 +56,7 @@ public final class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Holder> 
             boolean hasThinking = m.thinking.length() > 0;
             boolean hasAnswer = m.text.length() > 0;
             boolean waiting = m.streaming && !hasAnswer;
+            if (h.avatar != null) setAvatarBreathing(h.avatar, m.streaming);
             if (h.thinkingBox != null) {
                 h.thinkingBox.setVisibility(hasThinking || waiting ? View.VISIBLE : View.GONE);
                 boolean expanded = hasThinking && (m.thinkingExpanded || waiting);
@@ -101,6 +102,32 @@ public final class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Holder> 
         return sb;
     }
 
+    /** Slow pulse on the mark while the model writes; calm, and stopped as soon as it is done. */
+    private static void setAvatarBreathing(View avatar, boolean on) {
+        Object running = avatar.getTag(R.id.avatar);
+        if (on) {
+            if (running instanceof android.animation.Animator && ((android.animation.Animator) running).isRunning()) return;
+            android.animation.AnimatorSet set = new android.animation.AnimatorSet();
+            android.animation.ObjectAnimator sx = android.animation.ObjectAnimator.ofFloat(avatar, View.SCALE_X, 1f, 1.12f, 1f);
+            android.animation.ObjectAnimator sy = android.animation.ObjectAnimator.ofFloat(avatar, View.SCALE_Y, 1f, 1.12f, 1f);
+            android.animation.ObjectAnimator al = android.animation.ObjectAnimator.ofFloat(avatar, View.ALPHA, 1f, 0.72f, 1f);
+            for (android.animation.ObjectAnimator a : new android.animation.ObjectAnimator[] { sx, sy, al }) {
+                a.setDuration(1900);
+                a.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+                a.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
+            }
+            set.playTogether(sx, sy, al);
+            set.start();
+            avatar.setTag(R.id.avatar, set);
+        } else if (running instanceof android.animation.Animator) {
+            ((android.animation.Animator) running).cancel();
+            avatar.setTag(R.id.avatar, null);
+            avatar.setScaleX(1f);
+            avatar.setScaleY(1f);
+            avatar.setAlpha(1f);
+        }
+    }
+
     static final class Holder extends RecyclerView.ViewHolder {
         final View bubble;
         final TextView text;
@@ -111,6 +138,7 @@ public final class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Holder> 
         final TextView thinkingText;
         final View thinkingChevron;
         final ProgressBar thinkingSpinner;
+        final View avatar;
 
         Holder(View v) {
             super(v);
@@ -123,6 +151,7 @@ public final class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Holder> 
             thinkingText = v.findViewById(R.id.thinking_text);
             thinkingChevron = v.findViewById(R.id.thinking_chevron);
             thinkingSpinner = v.findViewById(R.id.thinking_spinner);
+            avatar = v.findViewById(R.id.avatar);
         }
     }
 }

@@ -72,6 +72,13 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton send;
     private ImageButton stop;
     private ImageButton thinkToggle;
+    private ImageButton mic;
+    private View inputPill;
+    private View recordBar;
+    private WaveformView waveform;
+    private TextView recordTimer;
+    private View recordProgress;
+    private VoiceInput voice;
     private ProgressBar progress;
     private TextView progressLabel;
     private View progressBox;
@@ -109,6 +116,13 @@ public class MainActivity extends AppCompatActivity {
         send = findViewById(R.id.send);
         stop = findViewById(R.id.stop);
         thinkToggle = findViewById(R.id.think_toggle);
+        mic = findViewById(R.id.mic);
+        inputPill = findViewById(R.id.input_pill);
+        recordBar = findViewById(R.id.record_bar);
+        waveform = findViewById(R.id.waveform);
+        recordTimer = findViewById(R.id.record_timer);
+        recordProgress = findViewById(R.id.record_progress);
+        voice = new VoiceInput(this);
         progress = findViewById(R.id.progress);
         progressLabel = findViewById(R.id.progress_label);
         progressBox = findViewById(R.id.progress_box);
@@ -131,6 +145,14 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.drawer_settings).setOnClickListener(v -> { drawer.closeDrawer(GravityCompat.START); showSettings(); });
         findViewById(R.id.drawer_about).setOnClickListener(v -> { drawer.closeDrawer(GravityCompat.START); showAbout(); });
         send.setOnClickListener(v -> onSend());
+        mic.setOnClickListener(v -> startVoiceInput());
+        findViewById(R.id.record_cancel).setOnClickListener(v -> { voice.cancel(); showRecording(false); });
+        findViewById(R.id.record_confirm).setOnClickListener(v -> {
+            recordProgress.setVisibility(View.VISIBLE);
+            recordTimer.setVisibility(View.GONE);
+            waveform.stop();
+            voice.stop();
+        });
         stop.setOnClickListener(v -> { if (eng.handle != 0) MercanNative.cancel(eng.handle); });
         thinkToggle.setOnClickListener(v -> {
             prefs.thinkingMode = !prefs.thinkingMode;
@@ -349,6 +371,65 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // ------------------------------------------------------------------- chat
+    // ---------------------------------------------------------------- voice input
+    private static final int REQ_MIC = 71;
+
+    private void startVoiceInput() {
+        if (androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO)
+                != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            androidx.core.app.ActivityCompat.requestPermissions(this,
+                    new String[] { android.Manifest.permission.RECORD_AUDIO }, REQ_MIC);
+            return;
+        }
+        showRecording(true);
+        voice.start(new VoiceInput.Listener() {
+            @Override public void onLevel(float peak) { waveform.push(peak); }
+
+            @Override public void onTick(int seconds) {
+                recordTimer.setText(String.format(java.util.Locale.getDefault(), "%d:%02d", seconds / 60, seconds % 60));
+            }
+
+            @Override public void onResult(String text) {
+                showRecording(false);
+                if (text == null || text.trim().isEmpty()) {
+                    Toast.makeText(MainActivity.this, R.string.stt_failed, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                final String current = input.getText().toString();
+                input.setText(current.isEmpty() ? text.trim() : current + " " + text.trim());
+                input.setSelection(input.getText().length());
+                input.requestFocus();
+            }
+
+            @Override public void onError(String message) {
+                showRecording(false);
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void showRecording(boolean on) {
+        recordBar.setVisibility(on ? View.VISIBLE : View.GONE);
+        inputPill.setVisibility(on ? View.GONE : View.VISIBLE);
+        recordProgress.setVisibility(View.GONE);
+        recordTimer.setVisibility(View.VISIBLE);
+        recordTimer.setText("0:00");
+        if (on) waveform.start(); else waveform.stop();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @androidx.annotation.NonNull String[] permissions,
+                                           @androidx.annotation.NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQ_MIC) {
+            if (grantResults.length > 0 && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                startVoiceInput();
+            } else {
+                Toast.makeText(this, R.string.mic_permission, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
     private void onSend() {
         if (!eng.modelReady || eng.generating || pendingRestores > 0) return;
         String text = input.getText().toString().trim();

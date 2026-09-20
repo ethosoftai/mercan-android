@@ -16,8 +16,8 @@ android {
         applicationId "ai.mercan.app"
         minSdk 26
         targetSdk 35
-        versionCode 4
-        versionName "0.4.0"
+        versionCode 5
+        versionName "0.5.0"
         // Model source. Point MODEL_URL at a private/gated endpoint and set MODEL_AUTH_TOKEN
         // (via keystore.properties or env) for anything that is not meant to be public.
         buildConfigField "String", "MODEL_URL", "\"${keystoreProps.getProperty('modelUrl', System.getenv('MERCAN_MODEL_URL') ?: 'https://huggingface.co/MercanAI/Mercan-0.8B-SFT/resolve/main/model.mercan?download=true')}\""
@@ -28,6 +28,8 @@ android {
                 arguments "-DANDROID_STL=c++_shared",
                           "-DANDROID_PLATFORM=android-26",
                           "-DMERCAN_BUILD_JNI=ON", "-DMERCAN_BUILD_GUI=OFF", "-DMERCAN_BUILD_CLI=OFF",
+                          "-DMERCAN_BUILD_STT=ON",
+                          "-DMERCAN_WHISPER_DIR=${System.getenv('MERCAN_WHISPER_DIR') ?: '/root/work/whisper.cpp'}",
                           "-DMERCAN_REPO_DIR=${System.getenv('MERCAN_REPO_DIR') ?: rootProject.file('../../repo').absolutePath}",
                           "-DMERCAN_LLAMA_DIR=${System.getenv('MERCAN_LLAMA_DIR') ?: rootProject.file('../../repo/build/_deps/llama-src').absolutePath}",
                           "-DNEDO004_FFI_LIB=${System.getenv('NEDO004_FFI_LIB') ?: ''}",
@@ -47,6 +49,11 @@ android {
         cmake {
             path file('../../CMakeLists.txt')
         }
+    }
+
+    androidResources {
+        // The speech model is already quantised; storing it plain keeps the first copy fast.
+        noCompress 'bin'
     }
 
     signingConfigs {

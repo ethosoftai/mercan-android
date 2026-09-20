@@ -15,6 +15,8 @@ option(MERCAN_BUILD_CLI "Build the mercan CLI" ON)
 option(MERCAN_BUILD_JNI "Build the Android JNI library" OFF)
 option(MERCAN_BUILD_TEST "Build the headless chat smoke test" OFF)
 option(MERCAN_BUILD_SERVER "Build the OpenAI-compatible mercan-server" OFF)
+option(MERCAN_BUILD_STT "Build speech-to-text (whisper.cpp) into the server" OFF)
+set(MERCAN_WHISPER_DIR "/root/work/whisper.cpp" CACHE PATH "whisper.cpp checkout (reuses this build's ggml)")
 
 if(NOT EXISTS "${MERCAN_LLAMA_DIR}/CMakeLists.txt")
     message(FATAL_ERROR "Patched llama.cpp not found at ${MERCAN_LLAMA_DIR}")
@@ -62,6 +64,20 @@ if(MERCAN_BUILD_CLI)
     target_link_libraries(mercan PRIVATE libmercan)
 endif()
 
+# Speech to text (whisper.cpp). Shared by the desktop server and the Android JNI library;
+# whisper.cpp reuses the ggml targets this build already defines.
+if(MERCAN_BUILD_STT)
+    set(WHISPER_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(WHISPER_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+    set(WHISPER_BUILD_SERVER OFF CACHE BOOL "" FORCE)
+    add_subdirectory("${MERCAN_WHISPER_DIR}" "${CMAKE_BINARY_DIR}/whisper" EXCLUDE_FROM_ALL)
+
+    add_library(mercan_stt STATIC server/mercan_stt.cpp)
+    target_include_directories(mercan_stt PUBLIC server)
+    target_link_libraries(mercan_stt PUBLIC whisper)
+    target_compile_definitions(mercan_stt PUBLIC MERCAN_HAS_STT=1)
+endif()
+
 # OpenAI-compatible HTTP server (used by the Open WebUI based desktop app).
 if(MERCAN_BUILD_SERVER)
     find_package(Threads REQUIRED)
@@ -78,6 +94,10 @@ if(MERCAN_BUILD_SERVER)
     add_library(mercan_server STATIC server/mercan_server.cpp)
     target_include_directories(mercan_server PUBLIC server "${MERCAN_LLAMA_DIR}/vendor")
     target_link_libraries(mercan_server PUBLIC mercan_chat mercan_httplib)
+
+    if(MERCAN_BUILD_STT)
+        target_link_libraries(mercan_server PUBLIC mercan_stt)
+    endif()
 
     add_executable(mercan-server server/server_main.cpp)
     target_link_libraries(mercan-server PRIVATE mercan_server)
@@ -105,4 +125,7 @@ if(MERCAN_BUILD_JNI)
     add_library(mercan_jni SHARED android/app/src/main/cpp/mercan_jni.cpp)
     target_include_directories(mercan_jni PRIVATE "${MERCAN_LLAMA_DIR}/ggml/include")
     target_link_libraries(mercan_jni PRIVATE mercan_chat log android)
+    if(MERCAN_BUILD_STT)
+        target_link_libraries(mercan_jni PRIVATE mercan_stt)
+    endif()
 endif()

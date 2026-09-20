@@ -93,4 +93,10 @@
     <string name="onb_body_2">Yazı kutusundaki ampule dokun: Mercan cevap vermeden önce adım adım düşünür, sonra sonucu yazar. Düşünce sürecini istersen açıp okuyabilirsin.</string>
     <string name="onb_title_3">Geliştirme aşamasında</string>
     <string name="onb_body_3">Sohbetlerin cihazında saklanır; sol menüden eski sohbetlere dön, ara, yeniden adlandır ya da sil. Tokenizer ve dil modeli hâlâ geliştiriliyor; hatalı cevaplarla karşılaşabilirsin.</string>
+    <string name="record_voice">Sesle yaz</string>
+    <string name="cancel">İptal</string>
+    <string name="stt_preparing">Konuşma tanıma hazırlanıyor…</string>
+    <string name="stt_transcribing">Yazıya çevriliyor…</string>
+    <string name="stt_failed">Ses anlaşılamadı, tekrar deneyin.</string>
+    <string name="mic_permission">Sesle yazmak için mikrofon izni gerekiyor.</string>
 </resources>

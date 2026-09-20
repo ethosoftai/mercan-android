@@ -4,6 +4,9 @@
 
 #include "ggml-backend.h"
 #include "mercan_chat.hpp"
+#if MERCAN_HAS_STT
+#  include "mercan_stt.hpp"
+#endif
 
 #include <string>
 #include <vector>
@@ -37,6 +40,9 @@ static jstring jstring_from_utf8(JNIEnv * env, const std::string & s) {
 
 static MercanChat * handle(jlong h) { return reinterpret_cast<MercanChat *>(h); }
 static std::string g_native_lib_dir;
+#if MERCAN_HAS_STT
+static MercanStt g_stt;   // one speech-to-text context per process
+#endif
 
 extern "C" {
 
@@ -134,6 +140,43 @@ JNIEXPORT jstring JNICALL Java_ai_mercan_app_MercanNative_chat(JNIEnv * env, jcl
     env->DeleteLocalRef(cb_cls);
     if (!err.empty() && err != "cancelled") return jstring_from_utf8(env, err);
     return nullptr;
+}
+
+// ------------------------------------------------------------------ speech to text
+JNIEXPORT jboolean JNICALL Java_ai_mercan_app_MercanNative_sttAvailable(JNIEnv *, jclass) {
+#if MERCAN_HAS_STT
+    return JNI_TRUE;
+#else
+    return JNI_FALSE;
+#endif
+}
+
+JNIEXPORT void JNICALL Java_ai_mercan_app_MercanNative_sttInit(JNIEnv * env, jclass, jstring model, jint threads) {
+#if MERCAN_HAS_STT
+    g_stt.set_model(jstr(env, model));
+    g_stt.set_threads(threads);
+#else
+    (void) env; (void) model; (void) threads;
+#endif
+}
+
+// Returns the transcript, or null when nothing could be recognised.
+JNIEXPORT jstring JNICALL Java_ai_mercan_app_MercanNative_sttTranscribe(JNIEnv * env, jclass, jfloatArray pcm, jstring language) {
+#if MERCAN_HAS_STT
+    if (!pcm) return nullptr;
+    const jsize n = env->GetArrayLength(pcm);
+    std::vector<float> samples(static_cast<size_t>(n));
+    env->GetFloatArrayRegion(pcm, 0, n, samples.data());
+
+    std::string err;
+    const std::string text = g_stt.transcribe(samples, jstr(env, language), err);
+    if (!err.empty()) LOGE("stt: %s", err.c_str());
+    if (text.empty()) return nullptr;
+    return jstring_from_utf8(env, text);
+#else
+    (void) env; (void) pcm; (void) language;
+    return nullptr;
+#endif
 }
 
 } // extern "C"

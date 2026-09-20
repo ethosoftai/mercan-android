@@ -29,6 +29,13 @@ public final class MercanNative {
     public static native void cancel(long handle);
     public static native int threads(long handle);
     public static native int defaultThreads();
+    /** True when this build bundles whisper.cpp. */
+    public static native boolean sttAvailable();
+    /** Points speech-to-text at a whisper.cpp model; the model loads on the first transcription. */
+    public static native void sttInit(String modelPath, int threads);
+    /** Blocking; 16 kHz mono samples in [-1,1]. Returns null when nothing was recognised. */
+    public static native String sttTranscribe(float[] pcm, String language);
+
     /** Blocking; returns null on success, otherwise an error message. */
     public static native String chat(long handle, String message, float temperature, float topP, int topK,
                                      float repeatPenalty, int maxTokens, String assistantPrefix, Callback callback);
