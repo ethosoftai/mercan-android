@@ -331,6 +331,9 @@ void MercanServer::handle_models(const httplib::Request & req, httplib::Response
     if (!authorized(req)) { res.status = 401; res.set_content(error_json("unauthorized").dump(), "application/json"); return; }
     const long long now = unix_now();
     json data = json::array();
+    // Until the on-device model is loaded there is nothing to offer: in "acil durum modu" the
+    // interface opens early and should then list only the remote model.
+    if (!ready_.load()) { res.set_content(json({{"object", "list"}, {"data", data}}).dump(), "application/json"); return; }
     data.push_back({{"id", model_id()}, {"object", "model"}, {"created", now}, {"owned_by", "mercan"}, {"name", "Mercan"}});
     data.push_back({{"id", think_model_id()}, {"object", "model"}, {"created", now}, {"owned_by", "mercan"}, {"name", "Mercan"}});
     res.set_content(json({{"object", "list"}, {"data", data}}).dump(), "application/json");
