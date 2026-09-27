@@ -38,4 +38,7 @@ release() {  # repo tag title file
 }
 release ethosoftai/mercan-windows "v$VERSION" "Mercan $VERSION (Windows)" "$ROOT/dist/MercanSetup-$VERSION.exe"
 release ethosoftai/mercan-android "v$VERSION" "Mercan $VERSION (Android)" "$ROOT/dist/Mercan-$VERSION.apk"
+for f in "$ROOT"/dist/linux/*; do
+  [ -f "$f" ] && gh release upload "v$VERSION" "$f" --repo ethosoftai/mercan-windows --clobber
+done
 echo "PUBLISH_DONE"

@@ -23,7 +23,7 @@ rsync -a --delete "$APPS/windows/" "$W/windows/"
 rsync -a --delete --exclude '*.zip' "$APPS/webui/" "$W/webui/"
 mkdir -p "$W/scripts"
 rm -f "$W"/scripts/*
-for f in build-windows.sh build-webui-runtime.sh build-linux-server.sh build-linux-test.sh webui-dev.sh \
+for f in build-windows.sh build-webui-runtime.sh build-linux-server.sh build-linux-test.sh webui-dev.sh \n         build-linux-packages.sh \
          release-windows.sh publish-github.sh publish-sync.sh installer.nsi mingw-w64-x86_64.cmake \
          sync.sh copy-fonts.sh make_icon.sh owui-nohelp.sh patch_llama_cmake.py; do
   [ -f "$APPS/scripts/$f" ] && cp "$APPS/scripts/$f" "$W/scripts/"
