@@ -14,7 +14,7 @@
 static std::atomic<bool> g_quit{false};
 
 int main(int argc, char ** argv) {
-    std::string model, host = "127.0.0.1", key, system, stt_model;
+    std::string model, host = "127.0.0.1", key, system, stt_model, ui;
     int port = 8765, threads = 0, ctx = 4096;
     for (int i = 1; i < argc; ++i) {
         const std::string a = argv[i];
@@ -25,12 +25,13 @@ int main(int argc, char ** argv) {
         else if (a == "--threads" || a == "-t") threads = std::atoi(next().c_str());
         else if (a == "--ctx" || a == "-c") ctx = std::atoi(next().c_str());
         else if (a == "--api-key") key = next();
+        else if (a == "--ui") ui = next();  // klasördeki arayüzü / adresinden sunar
         else if (a == "--system") system = next();
         else if (a == "--stt-model") stt_model = next();
         else { std::fprintf(stderr, "unknown argument: %s\n", a.c_str()); return 2; }
     }
     if (model.empty()) {
-        std::fprintf(stderr, "usage: mercan-server --model model.mercan [--host H] [--port P] [--threads N] [--ctx N] [--api-key K] [--system S]\n");
+        std::fprintf(stderr, "usage: mercan-server --model model.mercan [--host H] [--port P] [--threads N] [--ctx N] [--api-key K] [--system S] [--ui DIR]\n");
         return 2;
     }
 
@@ -42,6 +43,7 @@ int main(int argc, char ** argv) {
     MercanServer server(chat);
     MercanServer::Options opt;
     opt.host = host; opt.port = port; opt.api_key = key; opt.default_system = system; opt.stt_model = stt_model;
+    opt.ui_dir = ui;
     const int bound = server.start(opt, err);
     if (bound < 0) { std::fprintf(stderr, "%s\n", err.c_str()); return 1; }
     server.set_ready(true);

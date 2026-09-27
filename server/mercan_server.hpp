@@ -27,6 +27,7 @@ public:
         std::string backend;              // reported in /health (e.g. "zen4")
         std::string stt_model;            // whisper.cpp model; empty = no /v1/audio/transcriptions
         std::string stt_language = "tr";
+        std::string ui_dir;               // dolu ise klasördeki arayüz / adresinden sunulur
     };
 
     explicit MercanServer(MercanChat & chat);

@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mercan</title>
+<style>
+  /* Linux paketinin arayüzü: tek dosya, sunucunun kendisi (/) üzerinden gelir.
+     Windows sürümündeki Open WebUI tabanlı arayüzün sade kardeşi — aynı palet, aynı akış. */
+  :root {
+    --brand: #af372e; --brand-dark: #8e2c25; --brand-soft: #eed3ce;
+    --ink: #333; --ink-soft: #6b6b6b; --bg: #fbf3f1; --side: #f6e6e3;
+    --surface: #fff; --line: #e4cfca; --user: #333; --user-text: #f0f0f0;
+    --think: #194891; --think-soft: #cfe3f5; --think-bg: #cbe6f6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --brand: #c9483d; --brand-dark: #af372e; --brand-soft: #3a2320;
+      --ink: #f0f0f0; --ink-soft: #b0b0b0; --bg: #1a1514; --side: #241d1b;
+      --surface: #2b2321; --line: #3a2f2c; --user: #3a3a3a;
+      --think: #5aa8ff; --think-soft: #1b2c46; --think-bg: #111d2e;
+    }
+  }
+  html[data-thinking="on"] {
+    --brand: var(--think); --brand-soft: var(--think-soft); --bg: var(--think-bg);
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg); color: var(--ink); display: flex; flex-direction: column;
+    font-family: "Bookman Old Style", "URW Bookman", Bookman, Georgia, serif;
+    transition: background-color .16s cubic-bezier(.4,0,.2,1), color .16s cubic-bezier(.4,0,.2,1);
+  }
+  header {
+    display: flex; align-items: center; gap: 10px; padding: 12px 18px;
+    border-bottom: 1px solid var(--line); background: var(--side);
+  }
+  header svg { width: 22px; height: 25px; fill: var(--brand); }
+  header b { font-weight: 500; font-size: 18px; }
+  header .spacer { flex: 1; }
+  main { flex: 1; overflow-y: auto; padding: 22px 16px 8px; }
+  .wrap { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+  .hero { text-align: center; margin: 12vh 0 0; }
+  .hero .row { display: flex; align-items: center; justify-content: center; gap: 14px; }
+  .hero svg { width: 52px; height: 60px; fill: var(--brand); }
+  .hero .name { font-size: 44px; letter-spacing: -.01em; }
+  .hero p { color: var(--ink-soft); font-size: 15px; margin-top: 10px; }
+  .msg { display: flex; flex-direction: column; gap: 6px; animation: rise .4s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes rise { from { opacity: 0; transform: translate3d(0, 10px, 0); } }
+  .msg.user { align-items: flex-end; }
+  .msg.user .body {
+    background: var(--user); color: var(--user-text); padding: 10px 14px;
+    border-radius: 16px; max-width: 80%; white-space: pre-wrap;
+  }
+  .msg.bot .who { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+  .msg.bot .who svg { width: 16px; height: 18px; fill: var(--brand); }
+  .msg.bot .body { white-space: pre-wrap; line-height: 1.6; }
+  details.think {
+    border-left: 2px solid var(--brand); padding: 2px 0 2px 12px; margin: 2px 0 6px;
+    color: var(--ink-soft); font-size: 14px;
+  }
+  details.think summary { cursor: pointer; font-weight: 500; color: var(--brand); }
+  footer { padding: 10px 16px 18px; }
+  form {
+    max-width: 760px; margin: 0 auto; display: flex; align-items: flex-end; gap: 8px;
+    background: var(--surface); border: 1px solid var(--brand); border-radius: 16px; padding: 10px 12px;
+    box-shadow: 0 1px 2px rgba(35,20,15,.05), 0 8px 24px -16px rgba(35,20,15,.35);
+  }
+  textarea {
+    flex: 1; border: 0; outline: 0; resize: none; background: transparent; color: inherit;
+    font: inherit; font-size: 15px; max-height: 160px; min-height: 26px;
+  }
+  button { font: inherit; border: 0; cursor: pointer; border-radius: 12px; }
+  .icon { background: transparent; color: var(--ink-soft); padding: 6px 8px; font-size: 15px; }
+  .icon.on { color: var(--brand); background: var(--brand-soft); }
+  .send { background: var(--brand); color: #fff; padding: 7px 14px; font-weight: 500; }
+  .send:disabled { opacity: .5; cursor: default; }
+  .note { max-width: 760px; margin: 8px auto 0; text-align: center; color: var(--ink-soft); font-size: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <svg viewBox="155.82 120.65 753.04 853.38"><path d="M600.21,901.09c1.89,26.21-12.17,50.31-34.05,63.26-18.29,10.82-39.27,12.74-58.5,4.9-29.3-11.94-44.43-38.95-44.78-69.79-.39-33.78-13.95-65.39-37.25-89.29-14.67-15.04-30.98-26.84-50.74-34.43-37.85-14.54-80.96-11.14-115.85,9.45-26.34,15.54-57.88,12.57-80.5-8.28-15.8-14.57-24.6-35.75-22.38-57.4s14.55-40.78,33.81-52.37c22.68-13.65,50.83-11.62,73.11,2.42,6.7,4.22,14.29,6.48,21.68,9.3,14.42,5.49,29.57,6.57,44.98,6.53,25.31-.06,50.96-8.7,71.6-22.44,54.33-36.14,76.43-103.95,53.38-165.34-10.55-28.08-30.78-51.1-56.16-67.52s-55.25-23.29-85.91-20.27c-17.67,1.74-34.32,6.59-49.51,15.75-21.34,12.87-47.02,15.81-69.25,4.36-19.33-9.96-32.27-27.65-36.36-47.09-4.8-22.84,1.53-45.25,17.08-61.91,20.96-22.46,56.64-27.3,81.88-12.84,17.23,9.88,34.35,16.9,54.14,19.01,30.78,3.28,60.61-2.92,86.69-19.38,39-24.61,64.58-65.29,65.58-112.07.59-27.8,11.61-52.75,36.99-66.74,20.24-11.16,45.72-11.14,65.95.82,22.91,13.54,36.56,38.35,34.23,64.79-4.06,46.13-41.15,55.94-53.49,68.37l-15.38,15.49c-40.59,46.57-45.19,114.66-10.71,165.86,18.59,27.61,45.36,48,77.41,57.47,10.3,3.04,20.51,4.12,31.14,4.87,27.42,1.92,52.47-6.57,76.03-20.09,17.99-10.33,40.69-10.18,59.41-2.44,22.46,9.27,39.89,33.78,40.77,57.84.73,19.96,2.26,38.94,10.29,57.13,5.45,12.36,11.46,23.55,20.26,33.95l19.78,20.08c7.99,8.11,18.32,12.8,27.06,19.71,27.88,22.03,34.05,59.68,15.37,89.78-15.11,24.35-44.28,37.31-72.75,30.82-20.94-4.78-37.57-18.71-47.23-37.74-5.27-10.38-6.56-21.57-6.87-33.22-1.12-43.03-21.7-82.3-56.39-107.5-22.32-16.22-47.41-25.42-75.1-26.13-31.85-.82-61.66,8.09-86.85,27.39l-9.93,8.08c-44.23,39.69-58.15,103.8-33.64,158.13,12.44,27.57,32.78,48.76,58.28,64.69,19.06,11.91,30.98,30.96,32.64,54.03Z"/><path d="M903.87,393.52c-15.26,37.44-57.66,54.26-93.39,36.57-27.09-13.41-42.08-41.57-38.02-71.46,3.84-28.24,25.83-52.7,55.22-57.55,14.34-2.37,28.79-.88,41.68,5.16,32.7,15.33,48.22,53.61,34.5,87.28Z"/></svg>
+  <b>Mercan</b>
+  <span class="spacer"></span>
+  <button class="icon" id="new" type="button" title="Yeni sohbet">Yeni sohbet</button>
+</header>
+
+<main><div class="wrap" id="chat">
+  <div class="hero" id="hero">
+    <div class="row">
+      <svg viewBox="155.82 120.65 753.04 853.38"><use href="#m"/><path d="M600.21,901.09c1.89,26.21-12.17,50.31-34.05,63.26-18.29,10.82-39.27,12.74-58.5,4.9-29.3-11.94-44.43-38.95-44.78-69.79-.39-33.78-13.95-65.39-37.25-89.29-14.67-15.04-30.98-26.84-50.74-34.43-37.85-14.54-80.96-11.14-115.85,9.45-26.34,15.54-57.88,12.57-80.5-8.28-15.8-14.57-24.6-35.75-22.38-57.4s14.55-40.78,33.81-52.37c22.68-13.65,50.83-11.62,73.11,2.42,6.7,4.22,14.29,6.48,21.68,9.3,14.42,5.49,29.57,6.57,44.98,6.53,25.31-.06,50.96-8.7,71.6-22.44,54.33-36.14,76.43-103.95,53.38-165.34-10.55-28.08-30.78-51.1-56.16-67.52s-55.25-23.29-85.91-20.27c-17.67,1.74-34.32,6.59-49.51,15.75-21.34,12.87-47.02,15.81-69.25,4.36-19.33-9.96-32.27-27.65-36.36-47.09-4.8-22.84,1.53-45.25,17.08-61.91,20.96-22.46,56.64-27.3,81.88-12.84,17.23,9.88,34.35,16.9,54.14,19.01,30.78,3.28,60.61-2.92,86.69-19.38,39-24.61,64.58-65.29,65.58-112.07.59-27.8,11.61-52.75,36.99-66.74,20.24-11.16,45.72-11.14,65.95.82,22.91,13.54,36.56,38.35,34.23,64.79-4.06,46.13-41.15,55.94-53.49,68.37l-15.38,15.49c-40.59,46.57-45.19,114.66-10.71,165.86,18.59,27.61,45.36,48,77.41,57.47,10.3,3.04,20.51,4.12,31.14,4.87,27.42,1.92,52.47-6.57,76.03-20.09,17.99-10.33,40.69-10.18,59.41-2.44,22.46,9.27,39.89,33.78,40.77,57.84.73,19.96,2.26,38.94,10.29,57.13,5.45,12.36,11.46,23.55,20.26,33.95l19.78,20.08c7.99,8.11,18.32,12.8,27.06,19.71,27.88,22.03,34.05,59.68,15.37,89.78-15.11,24.35-44.28,37.31-72.75,30.82-20.94-4.78-37.57-18.71-47.23-37.74-5.27-10.38-6.56-21.57-6.87-33.22-1.12-43.03-21.7-82.3-56.39-107.5-22.32-16.22-47.41-25.42-75.1-26.13-31.85-.82-61.66,8.09-86.85,27.39l-9.93,8.08c-44.23,39.69-58.15,103.8-33.64,158.13,12.44,27.57,32.78,48.76,58.28,64.69,19.06,11.91,30.98,30.96,32.64,54.03Z"/><path d="M903.87,393.52c-15.26,37.44-57.66,54.26-93.39,36.57-27.09-13.41-42.08-41.57-38.02-71.46,3.84-28.24,25.83-52.7,55.22-57.55,14.34-2.37,28.79-.88,41.68,5.16,32.7,15.33,48.22,53.61,34.5,87.28Z"/></svg>
+      <div class="name">Mercan</div>
+    </div>
+    <p>İnternetsiz çalışan, derin düşünebilen Türkçe yapay zekâ asistanı.</p>
+  </div>
+</div></main>
+
+<footer>
+  <form id="form">
+    <button class="icon" id="think" type="button" title="Düşünme modu">💡</button>
+    <textarea id="input" rows="1" placeholder="Mercan'a bir şey sor…"></textarea>
+    <button class="send" id="send" type="submit">Gönder</button>
+  </form>
+  <div class="note" id="note">Demo sürümü • Mercan hata yapabilir.</div>
+</footer>
+
+<script>
+  const chat = document.getElementById('chat');
+  const hero = document.getElementById('hero');
+  const input = document.getElementById('input');
+  const form = document.getElementById('form');
+  const send = document.getElementById('send');
+  const thinkBtn = document.getElementById('think');
+  const note = document.getElementById('note');
+  let thinking = localStorage.mercanThink === '1';
+  let history = [];
+
+  const paint = () => {
+    thinkBtn.classList.toggle('on', thinking);
+    document.documentElement.dataset.thinking = 'off';
+  };
+  thinkBtn.onclick = () => {
+    thinking = !thinking;
+    localStorage.mercanThink = thinking ? '1' : '0';
+    paint();
+  };
+  document.getElementById('new').onclick = () => {
+    history = [];
+    [...chat.querySelectorAll('.msg')].forEach((n) => n.remove());
+    hero.style.display = '';
+  };
+  input.addEventListener('input', () => {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 160) + 'px';
+  });
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); }
+  });
+
+  const bubble = (role) => {
+    const el = document.createElement('div');
+    el.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
+    el.innerHTML = role === 'user'
+      ? '<div class="body"></div>'
+      : '<div class="who"><svg viewBox="155.82 120.65 753.04 853.38"><path d="M600.21,901.09c1.89,26.21-12.17,50.31-34.05,63.26-18.29,10.82-39.27,12.74-58.5,4.9-29.3-11.94-44.43-38.95-44.78-69.79-.39-33.78-13.95-65.39-37.25-89.29-14.67-15.04-30.98-26.84-50.74-34.43-37.85-14.54-80.96-11.14-115.85,9.45-26.34,15.54-57.88,12.57-80.5-8.28-15.8-14.57-24.6-35.75-22.38-57.4s14.55-40.78,33.81-52.37c22.68-13.65,50.83-11.62,73.11,2.42,6.7,4.22,14.29,6.48,21.68,9.3,14.42,5.49,29.57,6.57,44.98,6.53,25.31-.06,50.96-8.7,71.6-22.44,54.33-36.14,76.43-103.95,53.38-165.34-10.55-28.08-30.78-51.1-56.16-67.52s-55.25-23.29-85.91-20.27c-17.67,1.74-34.32,6.59-49.51,15.75-21.34,12.87-47.02,15.81-69.25,4.36-19.33-9.96-32.27-27.65-36.36-47.09-4.8-22.84,1.53-45.25,17.08-61.91,20.96-22.46,56.64-27.3,81.88-12.84,17.23,9.88,34.35,16.9,54.14,19.01,30.78,3.28,60.61-2.92,86.69-19.38,39-24.61,64.58-65.29,65.58-112.07.59-27.8,11.61-52.75,36.99-66.74,20.24-11.16,45.72-11.14,65.95.82,22.91,13.54,36.56,38.35,34.23,64.79-4.06,46.13-41.15,55.94-53.49,68.37l-15.38,15.49c-40.59,46.57-45.19,114.66-10.71,165.86,18.59,27.61,45.36,48,77.41,57.47,10.3,3.04,20.51,4.12,31.14,4.87,27.42,1.92,52.47-6.57,76.03-20.09,17.99-10.33,40.69-10.18,59.41-2.44,22.46,9.27,39.89,33.78,40.77,57.84.73,19.96,2.26,38.94,10.29,57.13,5.45,12.36,11.46,23.55,20.26,33.95l19.78,20.08c7.99,8.11,18.32,12.8,27.06,19.71,27.88,22.03,34.05,59.68,15.37,89.78-15.11,24.35-44.28,37.31-72.75,30.82-20.94-4.78-37.57-18.71-47.23-37.74-5.27-10.38-6.56-21.57-6.87-33.22-1.12-43.03-21.7-82.3-56.39-107.5-22.32-16.22-47.41-25.42-75.1-26.13-31.85-.82-61.66,8.09-86.85,27.39l-9.93,8.08c-44.23,39.69-58.15,103.8-33.64,158.13,12.44,27.57,32.78,48.76,58.28,64.69,19.06,11.91,30.98,30.96,32.64,54.03Z"/></svg>Mercan</div><div class="body"></div>';
+    chat.appendChild(el);
+    return el.querySelector('.body');
+  };
+
+  form.onsubmit = async (event) => {
+    event.preventDefault();
+    const text = input.value.trim();
+    if (!text || send.disabled) return;
+    hero.style.display = 'none';
+    input.value = '';
+    input.style.height = 'auto';
+    bubble('user').textContent = text;
+    history.push({ role: 'user', content: text });
+
+    const body = bubble('bot');
+    send.disabled = true;
+    note.textContent = thinking ? 'Düşünüyor…' : 'Yazıyor…';
+    if (thinking) document.documentElement.dataset.thinking = 'on';
+
+    let answer = '';
+    try {
+      const res = await fetch('/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          model: thinking ? 'mercan-0.8b-dusunen' : 'mercan-0.8b',
+          messages: history,
+          stream: true
+        })
+      });
+      if (!res.ok || !res.body) throw new Error('sunucu ' + res.status);
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() ?? '';
+        for (const line of lines) {
+          if (!line.startsWith('data:')) continue;
+          const payload = line.slice(5).trim();
+          if (!payload || payload === '[DONE]') continue;
+          try {
+            const chunk = JSON.parse(payload);
+            answer += chunk?.choices?.[0]?.delta?.content ?? '';
+          } catch {}
+        }
+        // <think> bloğu katlanır kartta, kalan metin gövdede.
+        const open = answer.indexOf('<think>');
+        const close = answer.indexOf('</think>');
+        if (open >= 0) {
+          const reason = answer.slice(open + 7, close >= 0 ? close : undefined);
+          const rest = close >= 0 ? answer.slice(close + 8) : '';
+          body.innerHTML = '';
+          const box = document.createElement('details');
+          box.className = 'think';
+          box.open = close < 0;
+          box.innerHTML = '<summary>Düşünce süreci</summary>';
+          const inner = document.createElement('div');
+          inner.textContent = reason.trim();
+          box.appendChild(inner);
+          const tail = document.createElement('div');
+          tail.textContent = rest.trim();
+          body.append(box, tail);
+        } else {
+          body.textContent = answer;
+        }
+        document.querySelector('main').scrollTop = document.querySelector('main').scrollHeight;
+      }
+      history.push({ role: 'assistant', content: answer.replace(/<think>[\s\S]*?<\/think>/, '').trim() });
+    } catch (err) {
+      body.textContent = 'Bağlantı hatası: ' + err.message;
+    } finally {
+      send.disabled = false;
+      document.documentElement.dataset.thinking = 'off';
+      note.textContent = 'Demo sürümü • Mercan hata yapabilir.';
+      input.focus();
+    }
+  };
+
+  paint();
+  input.focus();
+</script>
+</body>
+</html>

@@ -293,6 +293,9 @@ int MercanServer::start(const Options & opt, std::string & error) {
     svr_->set_write_timeout(600, 0);
     svr_->set_payload_max_length(64 * 1024 * 1024);
 
+    // Linux paketinde grafik arayüz yok: istenirse sunucu kendi sayfasını / adresinden sunar.
+    if (!opt_.ui_dir.empty()) svr_->set_mount_point("/", opt_.ui_dir);
+
     svr_->Get("/health", [this](const httplib::Request &, httplib::Response & res) {
         res.set_content(json({{"status", "ok"}, {"ready", ready_.load()}, {"backend", opt_.backend}}).dump(), "application/json");
     });
