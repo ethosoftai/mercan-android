@@ -7,7 +7,7 @@ APPS=$ROOT/apps
 GH=$ROOT/github
 W=$GH/mercan-windows
 A=$GH/mercan-android
-VERSION=${MERCAN_VERSION:-0.5.0}
+VERSION=${MERCAN_VERSION:-0.7.0}
 
 # Open WebUI fork -> patch against upstream v0.6.5 (the fork itself is never copied)
 cd /root/work/open-webui

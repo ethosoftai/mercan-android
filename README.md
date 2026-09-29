@@ -1,6 +1,6 @@
 # Mercan — Android uygulaması (v0.4.0)
 
-MercanAI/Mercan-0.8B-SFT (Türkçe, Q4_K_M) modelini tamamen telefonda çalıştıran sohbet uygulaması.
+MercanAI/Mercan-0.8B-Preference-Plus-Q4 (Türkçe, Q4_K_M, HH-RLHF-TR DPO) modelini tamamen telefonda çalıştıran sohbet uygulaması.
 Android 8.0+ (arm64-v8a). **Derlenmiş çıktı:** `dist/Mercan-0.4.0.apk`.
 
 ## Özellikler

@@ -22,9 +22,12 @@ public final class ModelManager {
     /** Overridable at build time (see build.gradle: MODEL_URL / MODEL_AUTH_TOKEN). */
     public static final String MODEL_URL = BuildConfig.MODEL_URL;
     public static final String MODEL_FILE = "model.mercan.enc";
+    /** Ağırlıkların kimliği; uygulama güncellenince bu değişirse eski model bırakılır. */
+    public static final String MODEL_ID = BuildConfig.MODEL_ID;
     private static final String LEGACY_FILE = "model.mercan";
     private static final String PREFS = "mercan_model";
     private static final String PREF_SHA = "plain_sha256";
+    private static final String PREF_ID = "model_id";
 
     public interface Progress {
         void onProgress(long downloaded, long total);
@@ -45,7 +48,15 @@ public final class ModelManager {
 
     public static boolean isReady(Context ctx) {
         File f = modelFile(ctx);
-        return f.isFile() && f.length() > 0;
+        if (!f.isFile() || f.length() == 0) return false;
+        // Uygulama yeni ağırlıklarla geldiyse telefondaki eskisi kullanılmaya devam etmesin.
+        String stored = prefs(ctx).getString(PREF_ID, null);
+        if (stored != null && !stored.equals(MODEL_ID)) {
+            f.delete();
+            prefs(ctx).edit().remove(PREF_SHA).remove(PREF_ID).apply();
+            return false;
+        }
+        return true;
     }
 
     /** Installs from a pre-0.4 plaintext model (or a file dropped in by hand) and removes the plaintext. */
@@ -136,7 +147,11 @@ public final class ModelManager {
         }
         dst.delete();
         if (!tmp.renameTo(dst)) throw new IOException("could not move model into place");
-        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(PREF_SHA, sha).apply();
+        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+                .edit()
+                .putString(PREF_SHA, sha)
+                .putString(PREF_ID, MODEL_ID)
+                .apply();
         return got;
     }
 
@@ -194,7 +209,7 @@ public final class ModelManager {
         modelFile(ctx).delete();
         new File(modelDir(ctx), LEGACY_FILE).delete();
         cleanTemp(ctx);
-        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().remove(PREF_SHA).apply();
+        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().remove(PREF_SHA).remove(PREF_ID).apply();
         ModelCrypto.resetKeys(ctx);
     }
 

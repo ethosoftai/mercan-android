@@ -21,6 +21,10 @@ public final class Prefs {
     public int maxTokens;
     public boolean thinkingMode;
     public boolean typewriter;
+    /** Kimlik: ağırlıklar kendi adını başka türlü söyleyebiliyor. */
+    public static final String DEFAULT_SYSTEM_PROMPT =
+            "Sen Mercan'sın: Ethosoft AI ekibinin geliştirdiği, tamamen cihaz üzerinde çalışan Türkçe yapay zekâ asistanı. Kısa, net ve nazik Türkçe cevaplar ver.";
+
     public String systemPrompt;
     public boolean onboarded;
 
@@ -40,7 +44,7 @@ public final class Prefs {
         maxTokens = sp.getInt("max_tokens", DEF_MAX_TOKENS);
         thinkingMode = sp.getBoolean("thinking", false);
         typewriter = sp.getBoolean("typewriter", true);
-        systemPrompt = sp.getString("system_prompt", "");
+        systemPrompt = sp.getString("system_prompt", DEFAULT_SYSTEM_PROMPT);
         onboarded = sp.getBoolean("onboarded", false);
     }
 

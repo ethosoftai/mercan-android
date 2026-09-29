@@ -11,7 +11,7 @@ GH=$ROOT/github
 W=$GH/mercan-windows
 A=$GH/mercan-android
 MSG=${1:-"sürüm güncellemesi"}
-VERSION=${MERCAN_VERSION:-0.5.0}
+VERSION=${MERCAN_VERSION:-0.7.0}
 
 echo "== dosyaları eşitle (WSL: rsync + Open WebUI yaması)"
 MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu-24.04 -u root -- bash /mnt/c/Users/yagiz/Desktop/app/apps/scripts/publish-sync.sh

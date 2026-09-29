@@ -81,7 +81,7 @@
     <string name="model_missing">Model henüz indirilmedi.</string>
     <string name="data_help">Sohbetler yalnızca bu cihazda saklanır; hiçbir veri dışarı gönderilmez. Model dosyası cihaza bağlı donanım anahtarıyla şifreli tutulur.</string>
     <string name="version">Mercan %1$s • Mercan 0.8B SFT (Q4_K_M)</string>
-    <string name="about_text">Mercan — tamamen cihaz üzerinde, internetsiz çalışan Türkçe yapay zekâ asistanı.\n\nBu bir demo sürümüdür. Asıl geliştirme, arayüzden çok arka plandaki Ar-Ge üzerinedir: Türkçe için tasarlanan NDSRF004 tokenizer, NedoLM mimarisi ve 0.8B parametreli Mercan dil modeli. Tokenizer ve model hâlâ geliştirme aşamasındadır.\n\nModel: MercanAI/Mercan-0.8B-SFT (Q4_K_M)\nRuntime: libmercan + llama.cpp çekirdeği\nSeçilen CPU çekirdeği: %1$s\n\nSohbetler yalnızca bu cihazda saklanır; hiçbir veri dışarı gönderilmez.</string>
+    <string name="about_text">Mercan — tamamen cihaz üzerinde, internetsiz çalışan Türkçe yapay zekâ asistanı.\n\nBu bir demo sürümüdür. Asıl geliştirme, arayüzden çok arka plandaki Ar-Ge üzerinedir: Türkçe için tasarlanan NDSRF004 tokenizer, NedoLM mimarisi ve 0.8B parametreli Mercan dil modeli. Tokenizer ve model hâlâ geliştirme aşamasındadır.\n\nModel: MercanAI/Mercan-0.8B-Preference-Plus-Q4 (Q4_K_M, DPO)\nRuntime: libmercan + llama.cpp çekirdeği\nSeçilen CPU çekirdeği: %1$s\n\nSohbetler yalnızca bu cihazda saklanır; hiçbir veri dışarı gönderilmez.</string>
     <!-- Onboarding -->
     <string name="demo_badge">Demo sürümü</string>
     <string name="skip">Atla</string>
