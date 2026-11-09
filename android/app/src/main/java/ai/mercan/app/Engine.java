@@ -34,6 +34,11 @@ public final class Engine {
     public volatile boolean loading = false;
     public volatile boolean generating = false;
     public String backendLabel = "";
+    /** Model currently loaded in the native context (null until a load succeeds). */
+    public volatile String loadedModelId;
+    public volatile String loadedModelName;
+    /** Model the last load attempt was for, whether or not it succeeded. */
+    public volatile String requestedModelId;
     private Listener listener;
     private String lastError;
 
@@ -49,7 +54,10 @@ public final class Engine {
 
     public String lastError() { return lastError; }
 
-    /** Downloads (if needed) and loads the model; reports through the listener on the UI thread. */
+    /**
+     * Loads the active model (downloading the built-in default when no model is installed);
+     * reports through the listener on the UI thread. Replaces any model already loaded.
+     */
     public void loadModel(Context appCtx, int threads, int ctxSize, String systemPrompt) {
         if (loading) return;
         loading = true;
@@ -66,14 +74,17 @@ public final class Engine {
                     });
                     if (!migrated) {
                         progress(appCtx.getString(R.string.downloading), 0, false);
-                        ModelManager.download(appCtx, (got, total) -> {
+                        ModelManager.downloadDefault(appCtx, (got, total) -> {
                             int pct = total > 0 ? (int) (got * 100 / total) : 0;
                             progress(appCtx.getString(R.string.downloading_pct, pct, got >> 20), pct, false);
-                        });
+                        }, null);
                     }
                 }
+                ModelManager.ModelInfo model = ModelManager.active(appCtx);
+                if (model == null) throw new IllegalStateException(appCtx.getString(R.string.model_missing));
+                requestedModelId = model.id;
                 progress(appCtx.getString(R.string.unsealing), 0, false);
-                File plain = ModelManager.prepareForLoad(appCtx, (got, total) -> {
+                File plain = ModelManager.prepareForLoad(appCtx, model, (got, total) -> {
                     int pct = total > 0 ? (int) (got * 100 / total) : 0;
                     progress(appCtx.getString(R.string.unsealing_pct, pct), pct, false);
                 });
@@ -86,9 +97,15 @@ public final class Engine {
                     // plaintext on disk.
                     plain.delete();
                 }
-                if (err != null) throw new RuntimeException(err);
+                if (err != null) {
+                    loadedModelId = null;
+                    loadedModelName = null;
+                    throw new RuntimeException(err);
+                }
                 MercanNative.setSystemPrompt(handle, systemPrompt == null ? "" : systemPrompt);
                 backendLabel = MercanNative.backendName();
+                loadedModelId = model.id;
+                loadedModelName = model.name;
                 modelReady = true;
                 loading = false;
                 ui.post(() -> { if (listener != null) listener.onReady(); });

@@ -53,7 +53,7 @@
     <string name="error">Hata: %1$s</string>
     <string name="empty_reply">(boş yanıt)</string>
     <string name="model_error_title">Model hazırlanamadı</string>
-    <string name="model_error">%1$s\n\nİnternet bağlantınızı kontrol edip tekrar deneyin ya da model.mercan dosyasını içe aktarın:\n%2$s</string>
+    <string name="model_error">%1$s\n\nİnternet bağlantınızı kontrol edip tekrar deneyin ya da Modeller ekranından başka bir model seçin veya ekleyin.</string>
     <string name="empty_subtitle">İnternetsiz çalışan, derin düşünebilen\nTürkçe yapay zekâ asistanı.</string>
     <string name="suggestions">DENE</string>
     <string name="suggest_1">İstanbul hakkında kısa bir şiir yaz</string>
@@ -99,4 +99,37 @@
     <string name="stt_transcribing">Yazıya çevriliyor…</string>
     <string name="stt_failed">Ses anlaşılamadı, tekrar deneyin.</string>
     <string name="mic_permission">Sesle yazmak için mikrofon izni gerekiyor.</string>
+
+    <!-- Modeller ekranı -->
+    <string name="manage_models">Modelleri yönet</string>
+    <string name="models_title">Modeller</string>
+    <string name="models_installed_header">YÜKLÜ MODELLER</string>
+    <string name="models_add_header">MODEL EKLE</string>
+    <string name="models_empty">Henüz yüklü model yok. Sohbet ekranına dönünce varsayılan model indirilir.</string>
+    <string name="models_select_help">Kullanmak istediğin modele dokun. Seçilen model sohbet ekranına dönünce yüklenir.</string>
+    <string name="models_meta">%3$s%1$s · %2$s</string>
+    <string name="models_active">etkin</string>
+    <string name="models_active_prefix">etkin · </string>
+    <string name="models_source_builtin">varsayılan</string>
+    <string name="models_source_file">dosyadan</string>
+    <string name="models_selected">%1$s seçildi.</string>
+    <string name="models_delete_title">Modeli sil</string>
+    <string name="models_delete_confirm">%1$s cihazdan silinsin mi?</string>
+    <string name="models_delete_last">%1$s cihazdan silinsin mi?\n\nBaşka model kalmadığı için sohbet ekranına dönünce varsayılan model yeniden indirilir.</string>
+    <string name="models_hf_label">Hugging Face adresi</string>
+    <string name="models_hf_hint">MercanAI/Mercan-0.8B-SFT</string>
+    <string name="models_hf_help">Depo adı (sahip/depo), depo bağlantısı ya da doğrudan .mercan dosya bağlantısı yapıştırabilirsin. Depoda birden fazla .mercan dosyası varsa seçmen istenir. Android sürümü şu an yalnızca Mercan/NedoLM modellerini çalıştırabiliyor.</string>
+    <string name="models_download">İndir</string>
+    <string name="models_cancel">İptal et</string>
+    <string name="models_busy">Başka bir model işlemi sürüyor.</string>
+    <string name="models_no_mercan">%1$s deposunda .mercan dosyası bulunamadı.</string>
+    <string name="models_pick_file">Hangi model dosyası?</string>
+    <string name="models_already_title">Model zaten yüklü</string>
+    <string name="models_already">%1$s bu cihazda zaten yüklü. Yeniden indirilsin mi?</string>
+    <string name="models_redownload">Yeniden indir</string>
+    <string name="models_downloading">%1$s indiriliyor</string>
+    <string name="models_task_progress">%1$s… %%%2$d (%3$d / %4$d MB)</string>
+    <string name="models_task_mb">%1$s… %2$d MB</string>
+    <string name="models_installed">Model yüklendi ve seçildi. Sohbet ekranına dönünce kullanılacak.</string>
+    <string name="models_failed">Model eklenemedi</string>
 </resources>

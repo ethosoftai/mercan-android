@@ -4,7 +4,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -91,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean autoScroll = true;
     private Typewriter typewriter;
 
-    private ActivityResultLauncher<String[]> pickModel;
     private ActivityResultLauncher<Intent> openSettings;
 
     // ------------------------------------------------------------------ lifecycle
@@ -194,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         applyInsets();
-        pickModel = registerForActivityResult(new ActivityResultContracts.OpenDocument(), this::importModel);
         openSettings = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), r -> {
             prefs.load();
             updateThinkToggle();
@@ -205,11 +202,6 @@ public class MainActivity extends AppCompatActivity {
                 bindConversation(Conversation.create());
                 if (eng.modelReady && !eng.generating) eng.executor.execute(() -> MercanNative.reset(eng.handle));
                 refreshConversationList();
-            }
-            if (d.getBooleanExtra(SettingsActivity.RESULT_IMPORT_MODEL, false)) {
-                if (eng.generating) Toast.makeText(this, R.string.wait_generation, Toast.LENGTH_SHORT).show();
-                else pickModel.launch(new String[]{"*/*"});
-                return;
             }
             if (d.getBooleanExtra(SettingsActivity.RESULT_THREADS_CHANGED, false)) {
                 if (!eng.generating) startModel(); // thread count lives in the native context
@@ -264,13 +256,19 @@ public class MainActivity extends AppCompatActivity {
             setControls(false);
             new AlertDialog.Builder(MainActivity.this)
                 .setTitle(R.string.model_error_title)
-                .setMessage(getString(R.string.model_error, message, ModelManager.MODEL_URL))
+                .setMessage(getString(R.string.model_error, message))
                 .setPositiveButton(R.string.retry, (d, w) -> startModel())
-                .setNeutralButton(R.string.import_model, (d, w) -> pickModel.launch(new String[]{"*/*"}))
+                .setNeutralButton(R.string.manage_models, (d, w) -> openModels())
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
         }
     };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        reloadIfActiveModelChanged();
+    }
 
     @Override
     protected void onPause() {
@@ -315,21 +313,22 @@ public class MainActivity extends AppCompatActivity {
         eng.loadModel(getApplicationContext(), prefs.threads, CTX_SIZE, prefs.systemPrompt);
     }
 
-    private void importModel(Uri uri) {
-        if (uri == null) return;
-        eng.modelReady = false;
-        setControls(false);
-        eng.executor.execute(() -> {
-            try {
-                MercanNative.unload(eng.handle);
-                post(() -> showProgress(getString(R.string.importing), 0, true));
-                ModelManager.importFrom(this, uri, (got, total) -> post(() ->
-                        showProgress(getString(R.string.importing_mb, got >> 20), 0, true)));
-                post(this::startModel);
-            } catch (Exception e) {
-                post(() -> { hideProgress(); status.setText(getString(R.string.error, e.getMessage())); startModel(); });
-            }
-        });
+    private void openModels() {
+        startActivity(new Intent(this, ModelsActivity.class));
+    }
+
+    /**
+     * The active model can change on the Models screen (selection, a finished download, a
+     * deletion). Reload when the engine holds a different model than the one now active.
+     */
+    private void reloadIfActiveModelChanged() {
+        if (eng.loading || eng.generating) return;
+        ModelManager.ModelInfo active = ModelManager.active(this);
+        String wanted = active == null ? null : active.id;
+        if (wanted == null) return; // nothing installed: first run / the error dialog handles it
+        // Already loaded, or already tried and failed (do not re-show the same error on every resume).
+        if (wanted.equals(eng.requestedModelId)) return;
+        startModel(); // onReady() replays the open conversation into the new model
     }
 
     /** Engine thread only. Feeds the saved transcript back into the KV cache. */

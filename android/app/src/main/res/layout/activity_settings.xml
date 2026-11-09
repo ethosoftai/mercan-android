@@ -159,12 +159,12 @@
                 <TextView style="@style/Text.Mercan.Label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:id="@+id/threads_label" />
                 <EditText android:id="@+id/threads" style="@style/Widget.Mercan.Field" android:inputType="number" />
                 <TextView
-                    android:id="@+id/import_model"
+                    android:id="@+id/manage_models"
                     style="@style/Widget.Mercan.SecondaryButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:text="@string/import_model" />
+                    android:text="@string/manage_models" />
             </LinearLayout>
 
             <!-- Veri -->

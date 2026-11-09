@@ -17,7 +17,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import java.io.File;
 import java.util.Locale;
 
 /** Settings screen. Returns RESULT_OK with flags describing what changed. */
@@ -26,13 +25,11 @@ public class SettingsActivity extends AppCompatActivity {
     public static final String EXTRA_DEFAULT_THREADS = "default_threads";
     public static final String RESULT_THREADS_CHANGED = "threads_changed";
     public static final String RESULT_SYSTEM_CHANGED = "system_changed";
-    public static final String RESULT_IMPORT_MODEL = "import_model";
     public static final String RESULT_CHATS_DELETED = "chats_deleted";
 
     private Prefs prefs;
     private EditText systemPrompt, temperature, maxTokens, topP, topK, repeat, threads;
     private Switch swThinking, swTypewriter;
-    private boolean importRequested = false;
     private boolean chatsDeleted = false;
 
     @Override
@@ -76,16 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
         int defThreads = getIntent().getIntExtra(EXTRA_DEFAULT_THREADS, 4);
         ((TextView) findViewById(R.id.threads_label)).setText(getString(R.string.set_threads, defThreads));
 
-        String backend = getIntent().getStringExtra(EXTRA_BACKEND);
-        File model = ModelManager.modelFile(this);
-        TextView info = findViewById(R.id.model_info);
-        if (model.isFile()) {
-            info.setText(getString(R.string.model_info, "Mercan 0.8B SFT (Q4_K_M)",
-                    String.format(Locale.getDefault(), "%.0f MB", model.length() / 1048576.0),
-                    backend == null || backend.isEmpty() ? "-" : backend));
-        } else {
-            info.setText(R.string.model_missing);
-        }
+        showModelInfo();
         ((TextView) findViewById(R.id.version)).setText(getString(R.string.version, BuildConfig.VERSION_NAME));
 
         findViewById(R.id.back).setOnClickListener(v -> saveAndFinish());
@@ -97,7 +85,7 @@ public class SettingsActivity extends AppCompatActivity {
             topK.setText(String.valueOf(Prefs.DEF_TOP_K));
             repeat.setText(fmt(Prefs.DEF_REPEAT));
         });
-        findViewById(R.id.import_model).setOnClickListener(v -> { importRequested = true; saveAndFinish(); });
+        findViewById(R.id.manage_models).setOnClickListener(v -> startActivity(new Intent(this, ModelsActivity.class)));
         findViewById(R.id.delete_all).setOnClickListener(v -> new AlertDialog.Builder(this)
             .setTitle(R.string.delete_all_chats)
             .setMessage(R.string.delete_all_confirm)
@@ -111,6 +99,25 @@ public class SettingsActivity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override public void handleOnBackPressed() { saveAndFinish(); }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        showModelInfo(); // the active model may have changed on the Models screen
+    }
+
+    private void showModelInfo() {
+        String backend = getIntent().getStringExtra(EXTRA_BACKEND);
+        ModelManager.ModelInfo active = ModelManager.active(this);
+        TextView info = findViewById(R.id.model_info);
+        if (active != null) {
+            info.setText(getString(R.string.model_info, active.name,
+                    String.format(Locale.getDefault(), "%.0f MB", active.size / 1048576.0),
+                    backend == null || backend.isEmpty() ? "-" : backend));
+        } else {
+            info.setText(R.string.model_missing);
+        }
     }
 
     private void saveAndFinish() {
@@ -129,7 +136,6 @@ public class SettingsActivity extends AppCompatActivity {
         Intent r = new Intent();
         r.putExtra(RESULT_THREADS_CHANGED, oldThreads != prefs.threads);
         r.putExtra(RESULT_SYSTEM_CHANGED, !oldSystem.equals(prefs.systemPrompt));
-        r.putExtra(RESULT_IMPORT_MODEL, importRequested);
         r.putExtra(RESULT_CHATS_DELETED, chatsDeleted);
         setResult(RESULT_OK, r);
         finish();
