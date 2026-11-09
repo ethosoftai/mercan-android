@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/paper">
+
+    <LinearLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="6dp">
+        <ImageButton
+            android:id="@+id/back"
+            style="@style/Widget.Mercan.IconButton"
+            android:src="@drawable/ic_back"
+            android:contentDescription="@string/back" />
+        <TextView
+            style="@style/Text.Mercan.Wordmark"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="6dp"
+            android:text="@string/models_title"
+            android:textSize="21sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="24dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Yüklü modeller -->
+            <TextView style="@style/Text.Mercan.SectionHeader" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/models_installed_header" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card_static"
+                android:paddingVertical="6dp">
+                <LinearLayout
+                    android:id="@+id/models_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+                <TextView
+                    android:id="@+id/models_empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="@string/models_empty"
+                    android:textColor="@color/ink_soft"
+                    android:textSize="13sp"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingHorizontal="4dp"
+                android:text="@string/models_select_help"
+                android:textColor="@color/ink_faint"
+                android:textSize="12sp" />
+
+            <!-- İndirme durumu -->
+            <LinearLayout
+                android:id="@+id/task_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card_static"
+                android:padding="16dp"
+                android:visibility="gone">
+                <TextView
+                    android:id="@+id/task_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/ink"
+                    android:textSize="14sp" />
+                <ProgressBar
+                    android:id="@+id/task_progress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:progressTint="@color/brand"
+                    android:indeterminateTint="@color/brand"
+                    android:max="100" />
+                <TextView
+                    android:id="@+id/task_cancel"
+                    style="@style/Widget.Mercan.SecondaryButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/models_cancel" />
+            </LinearLayout>
+
+            <!-- Model ekle -->
+            <TextView style="@style/Text.Mercan.SectionHeader" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/models_add_header" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card_static"
+                android:padding="16dp">
+                <TextView style="@style/Text.Mercan.Label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/models_hf_label" />
+                <EditText
+                    android:id="@+id/hf_input"
+                    style="@style/Widget.Mercan.Field"
+                    android:hint="@string/models_hf_hint"
+                    android:inputType="textUri"
+                    android:imeOptions="actionGo"
+                    android:singleLine="true" />
+                <TextView
+                    android:id="@+id/hf_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:textColor="@color/danger"
+                    android:textSize="13sp"
+                    android:visibility="gone" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/models_hf_help"
+                    android:textColor="@color/ink_soft"
+                    android:textSize="12sp"
+                    android:lineSpacingMultiplier="1.3" />
+                <TextView
+                    android:id="@+id/add_hf"
+                    style="@style/Widget.Mercan.PrimaryButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:text="@string/models_download" />
+                <TextView
+                    android:id="@+id/import_file"
+                    style="@style/Widget.Mercan.SecondaryButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/import_model" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
